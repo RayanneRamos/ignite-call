@@ -145,9 +145,23 @@ export function PrismaAdapter(): Adapter {
       }
     },
 
-    async updateSession({ sessionToken }) {},
+    async updateSession({ sessionToken, userId, expires }) {
+      const prismaSession = await prisma.session.update({
+        where: {
+          session_token: sessionToken,
+        },
+        data: {
+          expires,
+          user_id: userId,
+        },
+      })
 
-    async deleteSession(sessionToken) {},
+      return {
+        sessionToken: prismaSession.session_token,
+        userId: prismaSession.user_id,
+        expires: prismaSession.expires,
+      }
+    },
 
     async createVerificationToken({ identifier, expires, token }) {},
 
