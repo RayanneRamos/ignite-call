@@ -8,6 +8,7 @@ import {
 } from '@ignite-ui/react'
 import { Container, Header } from '../styles'
 import {
+  FormError,
   IntervalBox,
   IntervalDay,
   IntervalInputs,
@@ -18,8 +19,26 @@ import { ArrowRight } from 'phosphor-react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { getWeekDays } from '@/src/utils/get-week-days'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-const timeIntervalsFromSchema = z.object({})
+const timeIntervalsFromSchema = z.object({
+  intervals: z
+    .array(
+      z.object({
+        weekDay: z.number().min(0).max(6),
+        enabled: z.boolean(),
+        startTime: z.string(),
+        endTime: z.string(),
+      }),
+    )
+    .length(7)
+    .transform((intervals) => intervals.filter((interval) => interval.enabled))
+    .refine((intervals) => intervals.length > 0, {
+      message: 'Você precisa selecionar pelo menos um dia da semana!',
+    }),
+})
+
+type TimeIntervalsFormData = z.infer<typeof timeIntervalsFromSchema>
 
 export default function TimeIntervals() {
   const {
@@ -27,17 +46,18 @@ export default function TimeIntervals() {
     handleSubmit,
     control,
     watch,
-    formState: { isSubmitting, errros },
+    formState: { isSubmitting, errors },
   } = useForm({
+    resolver: zodResolver(timeIntervalsFromSchema),
     defaultValues: {
       intervals: [
-        { weekDay: 0, enable: false, startTime: '08:00', endTime: '18:00' },
-        { weekDay: 1, enable: true, startTime: '08:00', endTime: '18:00' },
-        { weekDay: 2, enable: true, startTime: '08:00', endTime: '18:00' },
-        { weekDay: 3, enable: true, startTime: '08:00', endTime: '18:00' },
-        { weekDay: 4, enable: true, startTime: '08:00', endTime: '18:00' },
-        { weekDay: 5, enable: true, startTime: '08:00', endTime: '18:00' },
-        { weekDay: 6, enable: false, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 0, enabled: false, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 1, enabled: true, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 2, enabled: true, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 3, enabled: true, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 4, enabled: true, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 5, enabled: true, startTime: '08:00', endTime: '18:00' },
+        { weekDay: 6, enabled: false, startTime: '08:00', endTime: '18:00' },
       ],
     },
   })
@@ -51,7 +71,9 @@ export default function TimeIntervals() {
 
   const intervals = watch('intervals')
 
-  async function handleSetTimeIntervals() {}
+  async function handleSetTimeIntervals(data: TimeIntervalsFormData) {
+    console.log(data)
+  }
 
   return (
     <Container>
@@ -70,7 +92,7 @@ export default function TimeIntervals() {
               <IntervalItem key={field.id}>
                 <IntervalDay>
                   <Controller
-                    name={`intervals.${index}.enable`}
+                    name={`intervals.${index}.enabled`}
                     control={control}
                     render={({ field }) => {
                       return (
@@ -90,14 +112,14 @@ export default function TimeIntervals() {
                     size="sm"
                     type="time"
                     step={60}
-                    disabled={intervals[index].enable === false}
+                    disabled={intervals[index].enabled === false}
                     {...register(`intervals.${index}.startTime`)}
                   />
                   <TextInput
                     size="sm"
                     type="time"
                     step={60}
-                    disabled={intervals[index].enable === false}
+                    disabled={intervals[index].enabled === false}
                     {...register(`intervals.${index}.endTime`)}
                   />
                 </IntervalInputs>
@@ -105,7 +127,10 @@ export default function TimeIntervals() {
             )
           })}
         </IntervalsContainer>
-        <Button type="submit">
+        {errors.intervals && (
+          <FormError size="sm">{errors.intervals.message}</FormError>
+        )}
+        <Button type="submit" disabled={isSubmitting}>
           Próximo Passo
           <ArrowRight />
         </Button>
