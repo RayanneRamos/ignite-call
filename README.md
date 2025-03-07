@@ -16,6 +16,13 @@
 
 [Ignite Call](https://ignite-call-ed1v2eylg-rayanneramos.vercel.app/) é o sexto projeto desenvolvido durante o bootcamp ignite da [Rocketseat](https://www.rocketseat.com.br/) que foca nas tecnologias ReactJS, React Native e NodeJS. Consiste em criar uma aplicação para agendamentos de horários, utilizamos o google calendar para as autenticações e gravar na agenda do usuário o dia e a hora da chamada disponibilizando um link direto para a call.
 
+## 🌟 Funcionalidades
+
+1. **Agendamento de chamadas diretamente na agenda do Google Calendar** 
+2. **Autenticação com Google, para facilitar o login e o acesso à agenda** 
+3. **Geração de link direto para a chamada, facilitando o acesso ao evento**
+4. **Disponível para Android e iOS, proporcionando uma experiência integrada de agendamentos móveis**
+
 ## 🧪 Technologies
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
