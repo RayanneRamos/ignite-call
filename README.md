@@ -23,7 +23,7 @@
 3. **Geração de link direto para a chamada, facilitando o acesso ao evento**
 4. **Disponível para Android e iOS, proporcionando uma experiência integrada de agendamentos móveis**
 
-## 🧪 Technologies
+## 🧪 Tecnologias
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
